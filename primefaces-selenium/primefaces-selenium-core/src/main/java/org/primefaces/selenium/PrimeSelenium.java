@@ -152,10 +152,8 @@ public final class PrimeSelenium {
      * @return the URL of the page
      */
     public static String getUrl(AbstractPrimePage page) {
-        DeploymentAdapter deploymentAdapter = ConfigProvider.getInstance().getDeploymentAdapter();
-
         String baseLocation = page.getBaseLocation();
-        if (deploymentAdapter != null) {
+        if (baseLocation == null) {
             baseLocation = getBaseUrl();
         }
 
