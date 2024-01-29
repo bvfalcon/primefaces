@@ -156,7 +156,9 @@ public final class PrimeSelenium {
         if (baseLocation == null) {
             baseLocation = getBaseUrl();
         }
-
+        if (baseLocation == null) {
+            throw new RuntimeException("Cannot determine base url. Please either configure deployment.baseUrl or implement DeploymentAdapter#getBaseUrl or AbstractPrimePage#getBaseLocation!");
+        }
         return baseLocation + page.getLocation();
     }
 
@@ -167,7 +169,11 @@ public final class PrimeSelenium {
      * @return the full URL
      */
     public static String getUrl(String url) {
-        return getBaseUrl() + url;
+        String baseUrl = getBaseUrl();
+        if (baseUrl == null) {
+            throw new RuntimeException("Cannot determine base url. Please either configure deployment.baseUrl or implement DeploymentAdapter#getBaseUrl!");
+        }
+        return baseUrl + url;
     }
 
     public static String getBaseUrl() {
