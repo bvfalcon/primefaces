@@ -23,8 +23,12 @@
  */
 package org.primefaces.selenium;
 
+import static org.primefaces.selenium.internal.ConfigProvider.DEPLOYMENT_ADAPTER;
+import static org.primefaces.selenium.internal.ConfigProvider.DEPLOYMENT_BASEURL;
+
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.html5.WebStorage;
@@ -157,7 +161,13 @@ public final class PrimeSelenium {
             baseLocation = getBaseUrl();
         }
         if (baseLocation == null) {
-            throw new RuntimeException("Cannot determine base url. Please either configure deployment.baseUrl or implement DeploymentAdapter#getBaseUrl or AbstractPrimePage#getBaseLocation!");
+            StringBuilder messageBuilder = new StringBuilder("Cannot determine base url. Please either configure ").append(DEPLOYMENT_BASEURL).append(" or ");
+            Optional.ofNullable(ConfigProvider.getInstance().getDeploymentAdapter())
+                    .map(da -> da.getClass().getCanonicalName()).ifPresentOrElse(
+                            dacn -> messageBuilder.append("implement ").append(dacn).append("#getBaseUrl"),
+                            () -> messageBuilder.append("define ").append(DEPLOYMENT_ADAPTER).append(" with implemented DeploymentAdapter#getBaseUrl"));
+            messageBuilder.append(page.getClass().getCanonicalName()).append("#getBaseLocation");
+            throw new RuntimeException(messageBuilder.toString());
         }
         return baseLocation + page.getLocation();
     }
@@ -171,7 +181,12 @@ public final class PrimeSelenium {
     public static String getUrl(String url) {
         String baseUrl = getBaseUrl();
         if (baseUrl == null) {
-            throw new RuntimeException("Cannot determine base url. Please either configure deployment.baseUrl or implement DeploymentAdapter#getBaseUrl!");
+            StringBuilder messageBuilder = new StringBuilder("Cannot determine base url. Please either configure ").append(DEPLOYMENT_BASEURL).append(" or ");
+            Optional.ofNullable(ConfigProvider.getInstance().getDeploymentAdapter())
+                    .map(da -> da.getClass().getCanonicalName()).ifPresentOrElse(
+                            dacn -> messageBuilder.append("implement ").append(dacn).append("#getBaseUrl"),
+                            () -> messageBuilder.append("define ").append(DEPLOYMENT_ADAPTER).append(" with implemented DeploymentAdapter#getBaseUrl"));
+            throw new RuntimeException(messageBuilder.toString());
         }
         return baseUrl + url;
     }
