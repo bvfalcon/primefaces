@@ -166,7 +166,7 @@ public final class PrimeSelenium {
                     .map(da -> da.getClass().getCanonicalName()).ifPresentOrElse(
                             dacn -> messageBuilder.append("implement ").append(dacn).append("#getBaseUrl"),
                             () -> messageBuilder.append("define ").append(DEPLOYMENT_ADAPTER).append(" with implemented DeploymentAdapter#getBaseUrl"));
-            messageBuilder.append(page.getClass().getCanonicalName()).append("#getBaseLocation");
+            messageBuilder.append(" or implement ").append(page.getClass().getCanonicalName()).append("#getBaseLocation");
             throw new RuntimeException(messageBuilder.toString());
         }
         return baseLocation + page.getLocation();
